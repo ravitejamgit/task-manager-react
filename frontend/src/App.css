@@ -1,0 +1,215 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  box-sizing: border-box;
+  background-color: #fff;
+  scrollbar-width: thin;
+  font-family: sans-serif;
+  letter-spacing: 0.5px;
+  width: 100%;
+  height: 100%;
+}
+
+body button {
+  background-color: #405cf5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+body button:hover {
+  background-color: rgb(63, 65, 207);
+}
+
+.mainBody {
+  display: flex;
+  align-items: start;
+  justify-content: space-evenly;
+}
+
+.filtersSection {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #fff;
+  flex-direction: column;
+  padding: 20px;
+  margin: 5px 8px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+.filterItem {
+  background-color: rgb(231, 231, 236);
+  padding: 5px;
+  margin: 10px;
+}
+
+.filterItem input {
+}
+
+.filterItem select {
+  width: 60%;
+}
+
+.listContainer {
+  flex: 1;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  margin: 0 5px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.list {
+  /* background-color: red; */
+  /* gap: 24px; */
+  list-style: none;
+}
+
+.task {
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  background-color: rgb(255, 255, 255);
+  gap: 30px;
+  border-radius: 12px;
+  width: 80%;
+}
+
+.task span {
+  width: 70%;
+}
+
+.InputForm {
+  position: absolute;
+  background-color: #fff;
+  margin-left: 90%;
+  width: 300px;
+  padding: 18px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+.taskActionButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.taskActionButtons button {
+  margin-right: 20px;
+  padding: 8px;
+  width: 4rem;
+}
+
+/* Login/Signup Container */
+.loginBody,
+.signUpBody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.loginContainer,
+.signUpContainer {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 24px;
+  gap: 5px;
+  width: 50vh;
+}
+
+.loginInputSection,
+.signUpInputSection {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  gap: 5px;
+}
+
+.loginInputSection input {
+  width: 40vh;
+  padding: 5px;
+  outline: none;
+  border: 1px solid;
+}
+
+.loginInputSection input:focus {
+  width: 40vh;
+  padding: 5px;
+  border-color: rgb(80, 108, 219);
+}
+
+.loginButtonSection button {
+  letter-spacing: 1px;
+  padding: 8px 18px;
+}
+
+.loginLinksSection button {
+  margin: 10px;
+  background-color: #fff;
+  color: #405cf5;
+}
+
+.loginLinksSection button:hover {
+  text-decoration: underline;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* Login/Signup Container */
+.signUpInputSection input {
+  width: 40vh;
+  padding: 5px;
+  outline: none;
+  border: 1px solid;
+}
+
+.signUpInputSection input:focus {
+  width: 40vh;
+  padding: 5px;
+  border-color: rgb(80, 108, 219);
+}
+
+.signUpButtonSection button {
+  letter-spacing: 1px;
+  padding: 8px 18px;
+}
+
+.signUpLinksSection button {
+  margin: 10px;
+  background-color: #fff;
+  color: #405cf5;
+}
+
+.signUpLinksSection button:hover {
+  text-decoration: underline;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.listContainerTopBar {
+  display: flex;
+  align-items: start;
+  justify-content: space-evenly;
+}
+
+.listContainerSortSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: yellow;
+  flex: 1;
+}

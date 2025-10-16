@@ -7,7 +7,7 @@ import {
   addTask,
   deleteTask,
   updateTask,
-  setUserLoggedOut
+  setUserLoggedOut,
 } from '../Utils/LocalStorageHelpers';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
@@ -45,9 +45,8 @@ const DownArrowSVG = () => (
 );
 
 export default function Dashboard() {
-  
   const navigate = useNavigate();
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedIn"));
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedIn'));
 
   const form = {
     id: '',
@@ -60,7 +59,6 @@ export default function Dashboard() {
     createdDate: '',
   };
 
-
   const emptyFilter = {
     priorityFilter: '',
     statusFilter: '',
@@ -71,18 +69,20 @@ export default function Dashboard() {
     title: false,
     priority: false,
     status: false,
-    dueDate: false
+    dueDate: false,
   };
 
   const priorityValues = {
-    High : 3,
-    Medium : 2,
-    Low : 1
-  }
+    High: 3,
+    Medium: 2,
+    Low: 1,
+  };
 
   const [formData, setFormData] = useState(form);
   const [submittedData, setSubmittedData] = useState(null);
-  const [fetchedData, setFetchedData] = useState(() => getData(loggedInUser.id));
+  const [fetchedData, setFetchedData] = useState(() =>
+    getData(loggedInUser.id)
+  );
 
   const [searchReq, setSearchReq] = useState('');
 
@@ -104,9 +104,8 @@ export default function Dashboard() {
   // console.log('sort Selection before useEffect : ' , sortSelection);
 
   useEffect(() => {
-
     // If no loggedin
-    if(!loggedInUser) {
+    if (!loggedInUser) {
       navigate('/login');
     }
 
@@ -125,10 +124,11 @@ export default function Dashboard() {
     // console.log(user);
 
     // Searched data
-    if(searchReq != '') {
-      retrievedData = retrievedData.filter((each) => each.title.includes(searchReq));
-    }
-    else {
+    if (searchReq != '') {
+      retrievedData = retrievedData.filter((each) =>
+        each.title.includes(searchReq)
+      );
+    } else {
       retrievedData = getData(loggedInUser.id);
     }
 
@@ -142,25 +142,29 @@ export default function Dashboard() {
       );
     });
 
-    // Sorting 
-    if(toggledSorts) {
+    // Sorting
+    if (toggledSorts) {
       // with respect to title
-      if(toggledTitleSort) {
+      if (toggledTitleSort) {
         retrievedData.sort((task1, task2) => {
-          return (sortSelection.title) ? task1.title.localeCompare(task2.title) : task2.title.localeCompare(task1.title)
+          return sortSelection.title
+            ? task1.title.localeCompare(task2.title)
+            : task2.title.localeCompare(task1.title);
         });
         setToggledTitleSort(false);
-      }
-      else if(toggledPrioritySort) {
+      } else if (toggledPrioritySort) {
         retrievedData.sort((task1, task2) => {
-          return (sortSelection.priority) ? priorityValues[task1.priority] - priorityValues[task2.priority] : priorityValues[task2.priority] - priorityValues[task1.priority]
+          return sortSelection.priority
+            ? priorityValues[task1.priority] - priorityValues[task2.priority]
+            : priorityValues[task2.priority] - priorityValues[task1.priority];
         });
         setToggledPrioritySort(false);
-      }
-      else if(toggledDueDateSort) {
+      } else if (toggledDueDateSort) {
         retrievedData.sort((task1, task2) => {
-          return (sortSelection.dueDate) ? new Date(task1.dueDate) - new Date(task2.dueDate) : new Date(task2.dueDate) - new Date(task1.dueDate)
-        })
+          return sortSelection.dueDate
+            ? new Date(task1.dueDate) - new Date(task2.dueDate)
+            : new Date(task2.dueDate) - new Date(task1.dueDate);
+        });
         setToggledDueDateSort(false);
       }
       setToggledSorts(false);
@@ -203,69 +207,79 @@ export default function Dashboard() {
 
   const sortSelectionHandler = (event) => {
     const ele = event.currentTarget.name;
-    const val = !(sortSelection[ele]);
+    const val = !sortSelection[ele];
     setSortSelection((prev) => ({
       ...prev,
-      [ele] : val
-    }))
+      [ele]: val,
+    }));
 
-    if(ele=== 'title') {
+    if (ele === 'title') {
       setToggledTitleSort(true);
-    }
-    else if(ele === 'priority')
-      setToggledPrioritySort(true);
-    else if(ele === 'dueDate')
-      setToggledDueDateSort(true);
+    } else if (ele === 'priority') setToggledPrioritySort(true);
+    else if (ele === 'dueDate') setToggledDueDateSort(true);
     setToggledSorts(true);
   };
 
   // Search Handler
   const searchHandler = (event) => {
     setSearchReq(event.currentTarget.value);
-  }
+  };
 
   return (
     <div>
-      <div>
+      <div className="dashboardHeaderSection">
         <h3>Dashboard</h3>
         <h1>Welcome, {loggedInUser.name || 'Guest'}</h1>
-        <button onClick={() => { setUserLoggedOut(); navigate('/login'); } }>Log Out</button>
+        <button
+          onClick={() => {
+            setUserLoggedOut();
+            navigate('/login');
+          }}
+        >
+          Log Out
+        </button>
       </div>
       <div className="mainBody">
         <div className="filtersSection">
           <button onClick={() => setCardStatus('new')}>New </button>
           <div className="filterSection">
-            <label htmlFor="priorityFilterLabel">Priority </label>
-            <select
-              name="priorityFilter"
-              id="priorityFilter"
-              onChange={filtersHandler}
-              value={filters.priorityFilter}
-            >
-              <option value=""></option>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-            <label htmlFor="statusFilterLabel"> Status </label>
-            <select
-              name="statusFilter"
-              id="statusFilter"
-              onChange={filtersHandler}
-              value={filters.statusFilter}
-            >
-              <option value=""></option>
-              <option value="To-Do">To Do</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-            </select>
-            <label htmlFor="dueDateFilter"> dueDate </label>
-            <input
-              type="date"
-              name="dueDateFilter"
-              value={filters.dueDateFilter}
-              onChange={filtersHandler}
-            />
+            <div className="filterItem">
+              <label htmlFor="priorityFilterLabel">Priority </label>
+              <select
+                name="priorityFilter"
+                id="priorityFilter"
+                onChange={filtersHandler}
+                value={filters.priorityFilter}
+              >
+                <option value=""></option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+            <div className="filterItem">
+              <label htmlFor="statusFilterLabel"> Status </label>
+              <select
+                name="statusFilter"
+                id="statusFilter"
+                onChange={filtersHandler}
+                value={filters.statusFilter}
+              >
+                <option value=""></option>
+                <option value="To-Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            <div className="filterItem">
+              <label htmlFor="dueDateFilter"> dueDate </label>
+              <input
+                type="date"
+                name="dueDateFilter"
+                value={filters.dueDateFilter}
+                onChange={filtersHandler}
+              />
+            </div>
 
             <button onClick={resetFilterHandler}>Clear</button>
           </div>
@@ -282,23 +296,34 @@ export default function Dashboard() {
           }
         </div>
         <div className="listContainer">
-          <div className="listContainerSortSection">
-            <button name='title' onClick={sortSelectionHandler}>
-              Title {   sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG /> }
-            </button>
-            <button name='priority' onClick={sortSelectionHandler}>
-              Priority <div className = "iconSection">{   sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG /> }</div>
-            </button>
-            <button name='status'>
-              Status
-            </button>
-            <button name='dueDate' onClick={sortSelectionHandler}>
-              Due Date <div className = "iconSection">{   sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG /> }</div>
-            </button>
-          </div>
-          <div className="listContainerSearchSection">
-            <input type="text" name="searchTask" onChange = {searchHandler} value = {searchReq}/>
-            <span onClick = {() => setSearchReq('')}>X</span>
+          <div className="listContainerTopBar">
+            <div className="listContainerSortSection">
+              <button name="title" onClick={sortSelectionHandler}>
+                Title {sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG />}
+              </button>
+              <button name="priority" onClick={sortSelectionHandler}>
+                Priority{' '}
+                <div className="iconSection">
+                  {sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG />}
+                </div>
+              </button>
+              <button name="status">Status</button>
+              <button name="dueDate" onClick={sortSelectionHandler}>
+                Due Date{' '}
+                <div className="iconSection">
+                  {sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG />}
+                </div>
+              </button>
+            </div>
+            <div className="listContainerSearchSection">
+              <input
+                type="text"
+                name="searchTask"
+                onChange={searchHandler}
+                value={searchReq}
+              />
+              <span onClick={() => setSearchReq('')}>X</span>
+            </div>
           </div>
           <SavedList
             loadedData={fetchedData}
