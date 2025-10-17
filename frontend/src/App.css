@@ -22,49 +22,308 @@ body button:hover {
   background-color: rgb(63, 65, 207);
 }
 
-.mainBody {
+.dashboard {
   display: flex;
-  align-items: start;
-  justify-content: space-evenly;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f6fa;
 }
 
-.filtersSection {
+.dashboardHeaderSection {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   background-color: #fff;
-  flex-direction: column;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 15px 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.headerButtons button {
+  margin-left: 10px;
+  border: none;
+  background-color: #2563eb;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.headerButtons button:hover {
+  background-color: #1d4ed8;
+}
+
+.logoutBtn {
+  background-color: #ef4444;
+}
+
+.logoutBtn:hover {
+  background-color: #dc2626;
+}
+
+/* ===== Main Layout ===== */
+.mainBody {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   padding: 20px;
-  margin: 5px 8px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Filters Section ===== */
+.filtersSection {
+  flex: 1;
+  min-width: 200px;
+  max-width: 200px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: fit-content;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filterHeader h3 {
+  font-size: 18px;
+  color: #111;
+}
+
+.resetBtn {
+  border: none;
+  background-color: #e5e7eb;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.resetBtn:hover {
+  background-color: #d1d5db;
+}
+
+.filterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .filterItem {
-  background-color: rgb(231, 231, 236);
-  padding: 5px;
-  margin: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.filterItem input {
+.filterItem label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
 }
 
 .filterItem select {
-  width: 60%;
+  appearance: none;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solic #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
+.filterForm select :hover {
+  background-color: #e9ecef;
+}
+
+.filterItem select,
+.filterItem input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.filterItem input[type = "date"] {
+  background-color: #f1f5f9;
+  appearance: none;
+  cursor: pointer;
+}
+
+.filterItem input[type = "date"] :hover{
+  background-color: #e2e8f0;
+}
+
+
+
+/* ===== List Section ===== */
 .listContainer {
-  flex: 1;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
-  margin: 0 5px;
-  padding: 10px;
-  border-radius: 20px;
+  flex: 3;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.list {
-  /* background-color: red; */
-  /* gap: 24px; */
-  list-style: none;
+.listTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.listSortSection button {
+  background-color: #f3f4f6;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.listSortSection button:hover {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.listSearchSection {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.listSearchSection input {
+  border: none;
+  padding: 8px 10px;
+  outline: none;
+  flex: 1;
+}
+
+.listSearchSection button {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+/* ===== Add Button ===== */
+.addButtonSection {
+  display: flex;
+  justify-content: space-between;
+}
+
+.newTaskBtn {
+  border: none;
+  background-color: #2563eb;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.newTaskBtn:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===== Task List / Table ===== */
+.listTopBar {
+  max-height: 64vh;
+  overflow: auto;
+}
+
+.listTopBar table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.listTopBar th,
+.listTopBar td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.listTopBar thead {
+  background-color: #bae2e2;
+  color: white;
+}
+
+.listTopBar th {
+  border-right: 1px solid #e5e7eb;;
+}
+
+.listTopBar th button {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.listTopBar tbody tr {
+  border-bottom: 1px solid #ddd;
+  transition: background 0.3s;
+}
+
+.listTopBar tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.taskActionButtons button {
+  padding: 4px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.taskActionButtons button:first-child {
+  background-color: #4caf50;
+  color: white;
+}
+
+.taskActionButtons button:first-child:hover {
+  background-color: #388e3c;
+}
+
+.taskActionButtons button:last-child {
+  background-color: #ff9800;
+  color: white;
+}
+
+.taskActionButtons button:last-child:hover {
+  background-color: #f57c00;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .mainBody {
+    flex-direction: column;
+  }
+  .filtersSection {
+    max-width: 100%;
+  }
 }
 
 .task {

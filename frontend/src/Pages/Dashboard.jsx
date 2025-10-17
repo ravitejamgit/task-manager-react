@@ -226,53 +226,74 @@ export default function Dashboard() {
   };
 
   return (
-    <div>
+    <div className="dashboard">
+      {/* ======= Header ======= */}
       <div className="dashboardHeaderSection">
-        <h3>Dashboard</h3>
-        <h1>Welcome, {loggedInUser.name || 'Guest'}</h1>
-        <button
-          onClick={() => {
-            setUserLoggedOut();
-            navigate('/login');
-          }}
-        >
-          Log Out
-        </button>
+        <div>
+          <h1>Dashboard</h1>
+          
+        </div>
+        <div className="headerButtons">
+          <center style={{margin: "5px"}}>
+            User: <i>{loggedInUser.name || 'Guest'}</i>
+          </center>
+          <button>Profile</button>
+          <button
+            className="logoutBtn"
+            onClick={() => {
+              setUserLoggedOut();
+              navigate('/login');
+            }}
+          >
+            Log out
+          </button>
+        </div>
       </div>
+
+      {/* ======= Main Body ======= */}
       <div className="mainBody">
+        {/* ===== Filters Section ===== */}
         <div className="filtersSection">
-          <button onClick={() => setCardStatus('new')}>New </button>
-          <div className="filterSection">
+          <div className="filterHeader">
+            <h3>Filters</h3>
+            <button onClick={resetFilterHandler} className="resetBtn">
+              Reset
+            </button>
+          </div>
+
+          <div className="filterForm">
             <div className="filterItem">
-              <label htmlFor="priorityFilterLabel">Priority </label>
+              <label htmlFor="priorityFilter">Priority</label>
               <select
                 name="priorityFilter"
                 id="priorityFilter"
                 onChange={filtersHandler}
                 value={filters.priorityFilter}
               >
-                <option value=""></option>
+                <option value="">All</option>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
               </select>
             </div>
+
             <div className="filterItem">
-              <label htmlFor="statusFilterLabel"> Status </label>
+              <label htmlFor="statusFilter">Status</label>
               <select
                 name="statusFilter"
                 id="statusFilter"
                 onChange={filtersHandler}
                 value={filters.statusFilter}
               >
-                <option value=""></option>
+                <option value="">All</option>
                 <option value="To-Do">To Do</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Completed">Completed</option>
               </select>
             </div>
+
             <div className="filterItem">
-              <label htmlFor="dueDateFilter"> dueDate </label>
+              <label htmlFor="dueDateFilter">Due Date</label>
               <input
                 type="date"
                 name="dueDateFilter"
@@ -280,55 +301,76 @@ export default function Dashboard() {
                 onChange={filtersHandler}
               />
             </div>
-
-            <button onClick={resetFilterHandler}>Clear</button>
           </div>
-          {
-            <FormCard
-              form={form}
-              formData={formData}
-              setFormData={setFormData}
-              cardStatus={cardStatus}
-              setCardStatus={setCardStatus}
-              setSubmittedData={setSubmittedData}
-              taskActionButtonsHandler={taskActionButtonsHandler}
-            />
-          }
+
+          {/* Form card (add / edit task) */}
+          <FormCard
+            form={form}
+            formData={formData}
+            setFormData={setFormData}
+            cardStatus={cardStatus}
+            setCardStatus={setCardStatus}
+            setSubmittedData={setSubmittedData}
+            taskActionButtonsHandler={taskActionButtonsHandler}
+          />
         </div>
+
+        {/* ===== List Section ===== */}
         <div className="listContainer">
-          <div className="listContainerTopBar">
-            <div className="listContainerSortSection">
-              <button name="title" onClick={sortSelectionHandler}>
-                Title {sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG />}
-              </button>
-              <button name="priority" onClick={sortSelectionHandler}>
-                Priority{' '}
-                <div className="iconSection">
-                  {sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG />}
-                </div>
-              </button>
-              <button name="status">Status</button>
-              <button name="dueDate" onClick={sortSelectionHandler}>
-                Due Date{' '}
-                <div className="iconSection">
-                  {sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG />}
-                </div>
-              </button>
-            </div>
-            <div className="listContainerSearchSection">
+          <div className="addButtonSection">
+            <button className="newTaskBtn" onClick={() => setCardStatus('new')}>
+              + New Task
+            </button>
+            <div className="listSearchSection">
               <input
                 type="text"
+                placeholder="Search by title..."
                 name="searchTask"
                 onChange={searchHandler}
                 value={searchReq}
               />
-              <span onClick={() => setSearchReq('')}>X</span>
+              <button onClick={() => setSearchReq('')}>✖</button>
             </div>
           </div>
-          <SavedList
-            loadedData={fetchedData}
-            taskActionButtonsHandler={taskActionButtonsHandler}
-          />
+          
+          <div className="listTopBar">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    <button name="title" onClick={sortSelectionHandler}>
+                      Title {sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG />}
+                    </button>
+                  </th>
+                  <th>
+                    <button name="priority" onClick={sortSelectionHandler}>
+                      Priority {sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG />}
+                    </button>
+                  </th>
+                  <th>
+                    <button name="dueDate" onClick={sortSelectionHandler}>
+                      Due Date {sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG />}
+                    </button>
+                  </th>
+                  <th>
+                    <button name="status" >
+                      Status
+                    </button>
+                  </th>
+                  <th>
+                    
+                  </th>
+                </tr>
+              </thead>
+              <SavedList
+                loadedData={fetchedData}
+                taskActionButtonsHandler={taskActionButtonsHandler}
+                setCardStatus={setCardStatus}
+              />
+            </table>
+          </div>
+
+          
         </div>
       </div>
     </div>
