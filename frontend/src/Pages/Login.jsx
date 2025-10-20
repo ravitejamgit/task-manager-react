@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Alert } from '../Components/Alert';
 
-export default function Login() {
+export default function Login({setAlertMessage}) {
   // Forms
   const loginFormEmpty = {
     userName: '',
@@ -60,18 +60,34 @@ export default function Login() {
 
   const login = (event) => {
     if (event.currentTarget.name === 'login') {
-      if (loginForm.userName === '') return;
-      if (loginForm.password === '') return;
+      if (loginForm.userName === '') {
+        setAlertMessage({
+          message: 'Please enter username!!!',
+          type: 'warning'
+        })
+        return;
+      }
+      if (loginForm.password === '') {
+        setAlertMessage({
+          message: 'Please enter password!!!',
+          type: 'warning'
+        })
+        return;
+      }
       var user = loginUser(loginForm);
       if (user) {
-        console.log('Login Successfull.');
         setUserLoggedIn(user);
         setLoginForm(loginFormEmpty);
-
+        setAlertMessage({
+          message: 'Welcome, ' + user.name,
+          type: 'success'
+        });
         navigate('/dashboard');
       } else {
-        alert('Invalid credentials...');
-        console.log('Invalid username or password..');
+        setAlertMessage({
+          message: 'Invalid Creadentials',
+          type: 'error'
+        });
         setLoginForm(loginFormEmpty);
       }
       return;
@@ -82,14 +98,41 @@ export default function Login() {
 
   const signUp = (event) => {
     if (event.currentTarget.name === 'signUp') {
-      if (signUpForm.userName === '') return;
-      if (signUpForm.name === '') return;
-      if (signUpForm.email === '') return;
-      if (signUpForm.password === '') return;
+      if (signUpForm.userName === '') {
+        setAlertMessage({
+          message: `Username can't be empty!!`,
+          type: 'warning'
+        })
+        return;
+      }
+      if (signUpForm.name === '') {
+        setAlertMessage({
+          message: `Name can't be empty!!`,
+          type: 'warning'
+        })
+        return;
+      }
+      if (signUpForm.email === '') {
+        setAlertMessage({
+          message: `Email can't be empty!!`,
+          type: 'warning'
+        })
+        return;
+      }
+      if (signUpForm.password === '') {
+        setAlertMessage({
+          message: `Password can't be empty!!`,
+          type: 'warning'
+        })
+        return;
+      }
 
       signUpForm.id = Date.now();
       signUpUser(signUpForm);
-      console.log('signup successfull');
+      setAlertMessage({
+          message: `Signup successfull...`,
+          type: 'success'
+        })
       setSignUpForm(signUpFormEmpty);
       setView('login');
       return;

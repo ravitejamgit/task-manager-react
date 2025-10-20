@@ -44,7 +44,7 @@ const DownArrowSVG = () => (
   </svg>
 );
 
-export default function Dashboard() {
+export default function Dashboard({setAlertMessage}) {
   const navigate = useNavigate();
   const loggedInUser = JSON.parse(localStorage.getItem('loggedIn'));
 
@@ -103,6 +103,8 @@ export default function Dashboard() {
   const [toggledDueDateSort, setToggledDueDateSort] = useState(false);
   // console.log('sort Selection before useEffect : ' , sortSelection);
 
+  
+
   useEffect(() => {
     // If no loggedin
     if (!loggedInUser) {
@@ -112,9 +114,11 @@ export default function Dashboard() {
     if (submittedData) {
       if (editStatus) {
         updateTask(submittedData);
+        setAlertMessage({message: 'Updated Successfully...', type: 'success'});
         setEditStatus(false);
       } else {
         addTask(submittedData);
+        setAlertMessage({message: 'Task Added Successfully', type: 'success'});
       }
       setSubmittedData(null);
     }
@@ -177,6 +181,7 @@ export default function Dashboard() {
   const taskActionButtonsHandler = (taskId, action) => {
     if (action === 'delete') {
       deleteTask(taskId);
+      setAlertMessage({message: 'Deleted Task..', type: 'success'});
       setCardStatus('');
       setFormData(form);
       setFetchedData(getData(loggedInUser.id));
@@ -203,6 +208,7 @@ export default function Dashboard() {
     setFilters(emptyFilter);
     setSortSelection(selectedSort);
     setToggledSorts(false);
+    setSearchReq('');
   };
 
   const sortSelectionHandler = (event) => {
@@ -227,6 +233,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      
       {/* ======= Header ======= */}
       <div className="dashboardHeaderSection">
         <div>
@@ -237,11 +244,12 @@ export default function Dashboard() {
           <center style={{margin: "5px"}}>
             User: <i>{loggedInUser.name || 'Guest'}</i>
           </center>
-          <button>Profile</button>
+          {/* <button>Profile</button> */}
           <button
             className="logoutBtn"
             onClick={() => {
               setUserLoggedOut();
+              setAlertMessage({message : 'Logged out successfully...', type : 'warning'})
               navigate('/login');
             }}
           >
@@ -302,6 +310,7 @@ export default function Dashboard() {
               />
             </div>
           </div>
+          
 
           {/* Form card (add / edit task) */}
           <FormCard
@@ -311,6 +320,7 @@ export default function Dashboard() {
             cardStatus={cardStatus}
             setCardStatus={setCardStatus}
             setSubmittedData={setSubmittedData}
+            setAlertMessage = {setAlertMessage}
             taskActionButtonsHandler={taskActionButtonsHandler}
           />
         </div>
@@ -358,7 +368,7 @@ export default function Dashboard() {
                     </button>
                   </th>
                   <th>
-                    
+                    <button>Actions</button>
                   </th>
                 </tr>
               </thead>

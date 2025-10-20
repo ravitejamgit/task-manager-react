@@ -15,7 +15,7 @@ export default function SavedList({ loadedData, taskActionButtonsHandler }) {
     <tbody>
       {loadedData.map((item, index) => (
         <tr key={index}>
-          <td>{item.title}</td>
+          <td><span className='title' onClick={() => taskActionButtonsHandler(item.id, 'view')}>{item.title.length > 18 ? item.title.substring(0, 15) + "..." : item.title}</span></td>
           <td>{item.priority}</td>
           <td>{new Date(item.dueDate).toLocaleDateString()}</td>
           <td>{item.status}</td>

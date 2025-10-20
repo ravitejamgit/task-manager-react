@@ -1,3 +1,7 @@
+* {
+  letter-spacing: 0.8px;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -213,12 +217,17 @@ body button:hover {
   flex: 1;
 }
 
+
+
 .listSearchSection button {
-  background-color: #ef4444;
-  color: white;
+  background-color: #e5e7eb;
+  color: #333;
   border: none;
   padding: 8px 10px;
   cursor: pointer;
+}
+.listSearchSection button:hover {
+  background-color: #d1d5db;
 }
 
 /* ===== Add Button ===== */
@@ -243,24 +252,27 @@ body button:hover {
 
 /* ===== Task List / Table ===== */
 .listTopBar {
-  max-height: 64vh;
   overflow: auto;
+  scrollbar-width: thin;
+  max-height: 58vh;
 }
 
 .listTopBar table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
 }
 
 .listTopBar th,
 .listTopBar td {
   padding: 12px 15px;
   text-align: left;
+  width: 200px;
+  word-break: break-all;
 }
 
+
 .listTopBar thead {
-  background-color: #bae2e2;
+  background-color: #96bbf6;
   color: white;
 }
 
@@ -288,6 +300,14 @@ body button:hover {
   background-color: #f1f1f1;
 }
 
+.title {
+  cursor: pointer;
+}
+
+.title:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
 .taskActionButtons button {
   padding: 4px 10px;
   margin-right: 5px;
@@ -298,22 +318,28 @@ body button:hover {
   transition: 0.3s;
 }
 
+.taskActionButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
 .taskActionButtons button:first-child {
-  background-color: #4caf50;
+  background-color: #f0bf42;
   color: white;
 }
 
 .taskActionButtons button:first-child:hover {
-  background-color: #388e3c;
+  background-color: #e0b342;
 }
 
 .taskActionButtons button:last-child {
-  background-color: #ff9800;
+  background-color: #f0bf42;
   color: white;
 }
 
 .taskActionButtons button:last-child:hover {
-  background-color: #f57c00;
+  background-color: #e0b342;
 }
 
 /* ===== Responsive ===== */
@@ -341,30 +367,180 @@ body button:hover {
   width: 70%;
 }
 
-.InputForm {
-  position: absolute;
-  background-color: #fff;
-  margin-left: 90%;
-  width: 300px;
-  padding: 18px;
-  max-height: 300px;
+
+/* Input/View card */
+.card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex; /* Enables flexbox for easy centering */
+  align-items: center; /* Centers items vertically */
+  justify-content: center; /* Centers items horizontally */
+  /* pointer-events: auto;  */
+  z-index: 1000; /* Ensures the overlay is on top of other content */
+}
+
+.card::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; 
+}
+
+.cardContainer {
+  background-color: white;
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 500px;
+  max-height: 525px;
+  pointer-events: auto;
   overflow-y: auto;
   scrollbar-width: thin;
-  scroll-behavior: smooth;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
-.taskActionButtons {
+.cardHeaderAction {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px;
+}
+
+
+
+.cardHeaderTitle {
+  text-align: center;  
+}
+
+.cardHeaderTitle label h3 span{ 
+  color: #555;
+  border-bottom: 1.5px solid #ddd;
+}
+
+.cardHeaderTitle label h3 {
+  margin: 5px 0;
+}
+
+.cardHeaderCloseButton:hover {
+  cursor: pointer;
+  color: #dc2626;
+}
+
+.cardBody {
+  padding: 5px;
+}
+
+.inputItem {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.inputItem label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.inputItem select {
+  appearance: none;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solic #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.inputItem select :hover {
+  background-color: #e9ecef;
+}
+
+.inputItem select,
+.inputItem input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.inputItem textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  scrollbar-width: thin;
+  overflow: auto;
+  height: 90px;
+  resize: none;
+}
+
+.inputItem input[type = "date"] {
+  background-color: #f1f5f9;
+  appearance: none;
+  cursor: pointer;
+}
+
+.inputItem input[type = "date"] :hover{
+  background-color: #e2e8f0;
+}
+
+.inputItem input[type = "radio"] {
+  margin: 5px;
+  cursor: pointer;
+}
+
+.displayItem {
+  
+}
+
+.displayItem label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.displayItem h4 {
+  border-radius: 8px;
+  background-color: #f1f5f9;
+  font-weight: normal;
+  margin : 5px 0;
+  padding: 8px;
+}
+
+.cardActionButtons {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: right;
+  gap: 18px;
+  margin-top: 10px;
 }
 
-.taskActionButtons button {
-  margin-right: 20px;
+.cardActionButtons button {
+  padding: 4px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s;
   padding: 8px;
   width: 4rem;
 }
+
+
+
+
+
+
 
 /* Login/Signup Container */
 .loginBody,
