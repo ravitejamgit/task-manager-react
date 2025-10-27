@@ -15,7 +15,6 @@ export default function Login({setAlertMessage}) {
   };
 
   const signUpFormEmpty = {
-    id: '',
     name: '',
     userName: '',
     email: '',
@@ -74,22 +73,23 @@ export default function Login({setAlertMessage}) {
         })
         return;
       }
-      var user = loginUser(loginForm);
-      if (user) {
-        setUserLoggedIn(user);
-        setLoginForm(loginFormEmpty);
-        setAlertMessage({
-          message: 'Welcome, ' + user.name,
-          type: 'success'
-        });
-        navigate('/dashboard');
-      } else {
-        setAlertMessage({
-          message: 'Invalid Creadentials',
-          type: 'error'
-        });
-        setLoginForm(loginFormEmpty);
-      }
+      loginUser(loginForm).then((user) => {
+        if (user) {
+          setUserLoggedIn(user);
+          setLoginForm(loginFormEmpty);
+          setAlertMessage({
+            message: 'Welcome, ' + user.name,
+            type: 'success'
+          });
+          navigate('/dashboard');
+        } else {
+          setAlertMessage({
+            message: 'Invalid Creadentials',
+            type: 'error'
+          });
+          setLoginForm(loginFormEmpty);
+        }
+      });
       return;
     } else if (event.currentTarget.name === 'clear') {
       setLoginForm(loginFormEmpty);
@@ -127,15 +127,19 @@ export default function Login({setAlertMessage}) {
         return;
       }
 
-      signUpForm.id = Date.now();
-      signUpUser(signUpForm);
-      setAlertMessage({
+      
+      signUpUser(signUpForm).then(() => {
+        setAlertMessage({
           message: `Signup successfull...`,
           type: 'success'
         })
-      setSignUpForm(signUpFormEmpty);
-      setView('login');
-      return;
+        setSignUpForm(signUpFormEmpty);
+        setView('login');
+      })
+      .catch((error) => {
+        console.log(error);
+      }) 
+      
     } else if (event.currentTarget.name === 'clear') {
       setSignUpForm(signUpFormEmpty);
     }

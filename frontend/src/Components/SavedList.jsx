@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 export default function SavedList({ loadedData, taskActionButtonsHandler }) {
   if (loadedData.length == 0) {
     return (
-      <table>
+      <tbody>
         <tr>
           <td style={{columnSpan:2}}><p>No Data Saved...</p></td>
         </tr>
-      </table>
+      </tbody>
     );
   }
+
+  //console.log(loadedData);
   return (
     <tbody>
       {loadedData.map((item, index) => (

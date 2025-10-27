@@ -49,7 +49,6 @@ export default function Dashboard({setAlertMessage}) {
   const loggedInUser = JSON.parse(localStorage.getItem('loggedIn'));
 
   const form = {
-    id: '',
     userId: loggedInUser.id,
     title: '',
     description: '',
@@ -80,9 +79,7 @@ export default function Dashboard({setAlertMessage}) {
 
   const [formData, setFormData] = useState(form);
   const [submittedData, setSubmittedData] = useState(null);
-  const [fetchedData, setFetchedData] = useState(() =>
-    getData(loggedInUser.id)
-  );
+  const [fetchedData, setFetchedData] = useState(null);
 
   const [searchReq, setSearchReq] = useState('');
 
@@ -103,28 +100,10 @@ export default function Dashboard({setAlertMessage}) {
   const [toggledDueDateSort, setToggledDueDateSort] = useState(false);
   // console.log('sort Selection before useEffect : ' , sortSelection);
 
-  
 
-  useEffect(() => {
-    // If no loggedin
-    if (!loggedInUser) {
-      navigate('/login');
-    }
-
-    if (submittedData) {
-      if (editStatus) {
-        updateTask(submittedData);
-        setAlertMessage({message: 'Updated Successfully...', type: 'success'});
-        setEditStatus(false);
-      } else {
-        addTask(submittedData);
-        setAlertMessage({message: 'Task Added Successfully', type: 'success'});
-      }
-      setSubmittedData(null);
-    }
-
-    let retrievedData = getData(loggedInUser.id);
-    console.log(retrievedData);
+  const loadData = async () => {
+    let retrievedData = await getData(loggedInUser.id);
+    //console.log(retrievedData);
     // console.log(user);
 
     // Searched data
@@ -133,7 +112,7 @@ export default function Dashboard({setAlertMessage}) {
         each.title.includes(searchReq)
       );
     } else {
-      retrievedData = getData(loggedInUser.id);
+      retrievedData = await getData(loggedInUser.id);
     }
 
     // Applying filters on fetchedData
@@ -175,16 +154,47 @@ export default function Dashboard({setAlertMessage}) {
     }
 
     setFetchedData(retrievedData);
+  }
+  
+
+  useEffect(() => {
+    // If no loggedin
+    if (!loggedInUser) {
+      navigate('/login');
+    }
+
+    if (submittedData) {
+      if (editStatus) {
+        updateTask(submittedData);
+        setAlertMessage({message: 'Updated Successfully...', type: 'success'});
+        setEditStatus(false);
+      } else {
+        addTask(submittedData).then(() => {
+          setAlertMessage({message: 'Task Added Successfully', type: 'success'});
+        })
+      }
+      setSubmittedData(null);
+    }
+
+    loadData();
+
   }, [submittedData, filters, sortSelection, searchReq]);
 
   // Action buttons of task -> VIEW, EDIT, DELETE
   const taskActionButtonsHandler = (taskId, action) => {
     if (action === 'delete') {
-      deleteTask(taskId);
-      setAlertMessage({message: 'Deleted Task..', type: 'success'});
-      setCardStatus('');
-      setFormData(form);
-      setFetchedData(getData(loggedInUser.id));
+      deleteTask(taskId).then((ok) => {
+        if(ok) {
+          setAlertMessage({message: 'Deleted Task..', type: 'success'});
+          setCardStatus('');
+          setFormData(form);
+          loadData();
+        }
+        else {
+          setAlertMessage({message: 'Failed to delete task..', type: 'error'});
+        }
+      })
+      
     } else {
       setCardStatus(action); // view or edit
       if (action === 'edit') {
@@ -231,158 +241,163 @@ export default function Dashboard({setAlertMessage}) {
     setSearchReq(event.currentTarget.value);
   };
 
-  return (
-    <div className="dashboard">
-      
-      {/* ======= Header ======= */}
-      <div className="dashboardHeaderSection">
-        <div>
-          <h1>Dashboard</h1>
-          
-        </div>
-        <div className="headerButtons">
-          <center style={{margin: "5px"}}>
-            User: <i>{loggedInUser.name || 'Guest'}</i>
-          </center>
-          {/* <button>Profile</button> */}
-          <button
-            className="logoutBtn"
-            onClick={() => {
-              setUserLoggedOut();
-              setAlertMessage({message : 'Logged out successfully...', type : 'warning'})
-              navigate('/login');
-            }}
-          >
-            Log out
-          </button>
-        </div>
-      </div>
-
-      {/* ======= Main Body ======= */}
-      <div className="mainBody">
-        {/* ===== Filters Section ===== */}
-        <div className="filtersSection">
-          <div className="filterHeader">
-            <h3>Filters</h3>
-            <button onClick={resetFilterHandler} className="resetBtn">
-              Reset
+  if(fetchedData) {
+    return (
+      <div className="dashboard">
+        
+        {/* ======= Header ======= */}
+        <div className="dashboardHeaderSection">
+          <div>
+            <h1>Dashboard</h1>
+            
+          </div>
+          <div className="headerButtons">
+            <center style={{margin: "5px"}}>
+              User: <i>{loggedInUser.name || 'Guest'}</i>
+            </center>
+            {/* <button>Profile</button> */}
+            <button
+              className="logoutBtn"
+              onClick={() => {
+                setUserLoggedOut();
+                setAlertMessage({message : 'Logged out successfully...', type : 'warning'})
+                navigate('/login');
+              }}
+            >
+              Log out
             </button>
           </div>
-
-          <div className="filterForm">
-            <div className="filterItem">
-              <label htmlFor="priorityFilter">Priority</label>
-              <select
-                name="priorityFilter"
-                id="priorityFilter"
-                onChange={filtersHandler}
-                value={filters.priorityFilter}
-              >
-                <option value="">All</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-
-            <div className="filterItem">
-              <label htmlFor="statusFilter">Status</label>
-              <select
-                name="statusFilter"
-                id="statusFilter"
-                onChange={filtersHandler}
-                value={filters.statusFilter}
-              >
-                <option value="">All</option>
-                <option value="To-Do">To Do</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-
-            <div className="filterItem">
-              <label htmlFor="dueDateFilter">Due Date</label>
-              <input
-                type="date"
-                name="dueDateFilter"
-                value={filters.dueDateFilter}
-                onChange={filtersHandler}
-              />
-            </div>
-          </div>
-          
-
-          {/* Form card (add / edit task) */}
-          <FormCard
-            form={form}
-            formData={formData}
-            setFormData={setFormData}
-            cardStatus={cardStatus}
-            setCardStatus={setCardStatus}
-            setSubmittedData={setSubmittedData}
-            setAlertMessage = {setAlertMessage}
-            taskActionButtonsHandler={taskActionButtonsHandler}
-          />
         </div>
 
-        {/* ===== List Section ===== */}
-        <div className="listContainer">
-          <div className="addButtonSection">
-            <button className="newTaskBtn" onClick={() => setCardStatus('new')}>
-              + New Task
-            </button>
-            <div className="listSearchSection">
-              <input
-                type="text"
-                placeholder="Search by title..."
-                name="searchTask"
-                onChange={searchHandler}
-                value={searchReq}
-              />
-              <button onClick={() => setSearchReq('')}>✖</button>
+        {/* ======= Main Body ======= */}
+        <div className="mainBody">
+          {/* ===== Filters Section ===== */}
+          <div className="filtersSection">
+            <div className="filterHeader">
+              <h3>Filters</h3>
+              <button onClick={resetFilterHandler} className="resetBtn">
+                Reset
+              </button>
             </div>
-          </div>
-          
-          <div className="listTopBar">
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    <button name="title" onClick={sortSelectionHandler}>
-                      Title {sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG />}
-                    </button>
-                  </th>
-                  <th>
-                    <button name="priority" onClick={sortSelectionHandler}>
-                      Priority {sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG />}
-                    </button>
-                  </th>
-                  <th>
-                    <button name="dueDate" onClick={sortSelectionHandler}>
-                      Due Date {sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG />}
-                    </button>
-                  </th>
-                  <th>
-                    <button name="status" >
-                      Status
-                    </button>
-                  </th>
-                  <th>
-                    <button>Actions</button>
-                  </th>
-                </tr>
-              </thead>
-              <SavedList
-                loadedData={fetchedData}
-                taskActionButtonsHandler={taskActionButtonsHandler}
-                setCardStatus={setCardStatus}
-              />
-            </table>
+
+            <div className="filterForm">
+              <div className="filterItem">
+                <label htmlFor="priorityFilter">Priority</label>
+                <select
+                  name="priorityFilter"
+                  id="priorityFilter"
+                  onChange={filtersHandler}
+                  value={filters.priorityFilter}
+                >
+                  <option value="">All</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+
+              <div className="filterItem">
+                <label htmlFor="statusFilter">Status</label>
+                <select
+                  name="statusFilter"
+                  id="statusFilter"
+                  onChange={filtersHandler}
+                  value={filters.statusFilter}
+                >
+                  <option value="">All</option>
+                  <option value="To-Do">To Do</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              <div className="filterItem">
+                <label htmlFor="dueDateFilter">Due Date</label>
+                <input
+                  type="date"
+                  name="dueDateFilter"
+                  value={filters.dueDateFilter}
+                  onChange={filtersHandler}
+                />
+              </div>
+            </div>
+            
+
+            {/* Form card (add / edit task) */}
+            <FormCard
+              form={form}
+              formData={formData}
+              setFormData={setFormData}
+              cardStatus={cardStatus}
+              setCardStatus={setCardStatus}
+              setSubmittedData={setSubmittedData}
+              setAlertMessage = {setAlertMessage}
+              taskActionButtonsHandler={taskActionButtonsHandler}
+            />
           </div>
 
-          
+          {/* ===== List Section ===== */}
+          <div className="listContainer">
+            <div className="addButtonSection">
+              <button className="newTaskBtn" onClick={() => setCardStatus('new')}>
+                + New Task
+              </button>
+              <div className="listSearchSection">
+                <input
+                  type="text"
+                  placeholder="Search by title..."
+                  name="searchTask"
+                  onChange={searchHandler}
+                  value={searchReq}
+                />
+                <button onClick={() => setSearchReq('')}>✖</button>
+              </div>
+            </div>
+            
+            <div className="listTopBar">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <button name="title" onClick={sortSelectionHandler}>
+                        Title {sortSelection.title ? <UpArrowSVG /> : <DownArrowSVG />}
+                      </button>
+                    </th>
+                    <th>
+                      <button name="priority" onClick={sortSelectionHandler}>
+                        Priority {sortSelection.priority ? <UpArrowSVG /> : <DownArrowSVG />}
+                      </button>
+                    </th>
+                    <th>
+                      <button name="dueDate" onClick={sortSelectionHandler}>
+                        Due Date {sortSelection.dueDate ? <UpArrowSVG /> : <DownArrowSVG />}
+                      </button>
+                    </th>
+                    <th>
+                      <button name="status" >
+                        Status
+                      </button>
+                    </th>
+                    <th>
+                      <button>Actions</button>
+                    </th>
+                  </tr>
+                </thead>
+                {
+                  fetchedData ? 
+                    <SavedList
+                      loadedData={fetchedData}
+                      taskActionButtonsHandler={taskActionButtonsHandler}
+                      setCardStatus={setCardStatus}
+                    /> : null
+                }
+              </table>
+            </div>
+
+            
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

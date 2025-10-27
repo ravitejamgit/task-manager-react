@@ -1,36 +1,67 @@
 import React from 'react';
 
 // Data Management
-export function getData(user) {
-  let data = JSON.parse(localStorage.getItem('Data'));
-  return data ? user ? data.filter((each) => each.userId === user) : data : [];
+export async function getData(user) {
+  try {
+    const data = await getAllData();
+    const filtered = data.filter((each) => each.userId === user);
+    return filtered ? filtered : [];
+  }
+  catch(error) {
+    console.log(error);
+  }
 }
 
-export function getDate() {
-  let data = JSON.parse(localStorage.getItem('Data'));
-  return data ? data : [];
+export async function getAllData() {
+  try {
+    const response = await fetch('http://localhost:5000/Data', { method: 'GET' });
+    const parsedData = await response.json();
+    return parsedData ? parsedData : [];
+  }
+  catch(error) {
+    console.log(error);
+  }
 }
 
 export function saveData(data) {
   localStorage.setItem('Data', JSON.stringify(data));
 }
 
-export function addTask(task) {
-  const fetched = getData();
-  saveData([...fetched, task]);
-  console.log("Task Added Successfully.");
+export async function addTask(task) {
+  try{
+    const response = await fetch('http://localhost:5000/Data', {method: 'POST', body: JSON.stringify(task)});
+    if(response.ok) {
+      console.log('Task added successfully...');
+    }
+    else {
+      console.log('Failed to add task.');
+    }
+  }catch(error) {
+    console.log(error);
+  } 
 }
 
-export function deleteTask(taskId) {
-  const fetched = getData();
-  saveData(fetched.filter((each) => each.id != taskId));
-  console.log('Task Deleted Successfully');
+export async function deleteTask(taskId) {
+  try {
+    const response = await fetch(`http://localhost:5000/Data/${taskId}`, { method: 'DELETE' });
+    console.log('Status ' + response.status + " : " + response.statusText);
+    return response.ok;
+  }
+  catch(error) {
+    console.log(error);
+  }
 }
 
-export function updateTask(task) {
-  const data = getData();
-  saveData(data.map((each) => (each.id === task.id ? task : each)));
-  console.log("Task Updated successfully");
+export async function updateTask(task) {
+  try {
+    const response = await fetch(`http://localhost:5000/Data/${task.id}`, { method: 'PUT', body: JSON.stringify(task) });
+    console.log('Status ' + response.status + " : " + response.statusText);
+    return response.ok;
+  }
+  catch(error) {
+    console.log(error);
+    
+  }
 }
 
 
@@ -52,18 +83,31 @@ export function saveUsers(data) {
   localStorage.setItem('users', JSON.stringify(data));
 }
 
-export function loginUser(data) {
-  let fetched = fetchUsers();
-  let user = fetched.find((each) => each.userName === data.userName);
-  if(user && user.password === data.password) {
-    return user;
+export async function loginUser(data) {
+  try {
+    const response = await fetch('http://localhost:5000/Users', { method: 'GET' });
+    const parsed = await response.json();
+    let user = await parsed.find((each) => each.userName === data.userName && each.password === data.password);
+    return user ? {userName: user.userName, id: user.id, email: user.email, name: user.name} : null;
   }
-  return null;
+  catch(error) {
+    console.log(error);
+  }
 }
 
-export function signUpUser(data) {
-  let fetched = fetchUsers();
-  saveUsers([...fetched, data]);
+export async function signUpUser(data) {
+  try {
+    const response = await fetch('http://localhost:5000/Users', { method: 'POST', body: JSON.stringify(data) });
+    if(response.ok) {
+      console.log('User registered successfully..');
+    }
+    else {
+      console.log('Registration failed..');
+    }
+  }
+  catch(error) {
+    console.log(error);
+  }
 }
 
 export function isUserNameExist(user) {

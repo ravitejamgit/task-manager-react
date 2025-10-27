@@ -28,10 +28,8 @@ export default function FormCard({
       formData.dueDate === ''
     )
       return;
-    if (formData.id === '') {
-      formData.id = Date.now();
-      formData.createdDate = new Date().toLocaleString();
-    }
+    
+    formData.createdDate = new Date().toLocaleString();
     setSubmittedData(formData);
     setFormData(form);
     handleClose();
